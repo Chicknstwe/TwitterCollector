@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 29 12:45:52 2018
-
-@author: Deme
-"""
 
 def filterStatuses(raw_statuses):
     """
