@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 29 12:45:52 2018
-
-@author: Deme
-"""
 
 class TwitterCollector():
     
@@ -107,15 +102,22 @@ class TwitterCollector():
                 'show_info': 'Con valor True muestra información relativa al error de tiempo (diferencia entre tiempo real de ejecución y tiempo estimado, y el tiempo total de ejecución del programa.',
                 'show_tweet_quantity': 'Con valor True muestra información sobre los tweets recolectados, en cada ronda y en total, en cada iteración. AVISO: puede generar un volumen elevado de avisos.',
                 'show_rate_limit': 'Muestra, al terminar la ejecución del programa, los límites de los "endpoints" de la API usados en el programa.',
-                'get_users_mode': 'Puede tener dos valores:\narchivo - Los nombres de los usuarios se obtienen de un archivo llamado usuarios.txt, ubicado en el directorio base del programa.\nterminal - Se obtienen los usuarios desde la terminal. Se solicitan nombres al usuario hasta que se proporciona un "input" vacío, lo cual se puede conseguir pulsando enter sin escribir nada. Se debe OMITIR la arroba (@) al introducir los nombres. Los nombres solicitados por el programa son los nombres de la cuentas (screen name).',
+                'get_users_mode': 'Puede tener dos valores:\narchivo - Los nombres de los usuarios se obtienen de un archivo llamado usuarios.txt, ubicado en el directorio base del programa.\nterminal - Se obtienen los usuarios desde la terminal. Se solicitan nombres al usuario hasta que se proporciona un "input" vacío, lo cual se puede conseguir pulsando enter sin escribir nada. Los nombres solicitados por el programa son los nombres de la cuentas (screen name).',
                 'auto_export': 'Con valor True, exporta los tweets a excel al finalizar la ejecución del programa.',
                 'export_mode': 'Puede tener dos valores:\nsplit - al exportar a excel se crean archivos para cada cuenta.\nunitary - al exportar a excel se crea un archivo para todos los usuarios usados en una sesión seleccionada por el usuario, con una división por hojas.'
                 }
-        
-        for field, value in self.CONFIG.items():
-            print('{}: {}.\n{}'.format(field, value, descriptions[field]))
             
-    
+        for field in self.CONFIG.keys():
+            print('>>> Campo: {}.\n>>> Descripción: {}\n'.format(field, descriptions[field]))
+            
+            
+    def getConfig(self):
+        
+        print('{: <25}{: <15}'.format('Campo', 'Valor actual'))
+        for field, value in self.CONFIG.items():
+            print('{: <25}{: <15}'.format(field, str(value)))
+            
+            
     def setConfig(self, *args):
         
         for field in args:
@@ -209,7 +211,7 @@ class TwitterCollector():
                     with open('{}{}.json'.format(folder_name, user), 'a+') as file:
                         
                         if comma:
-                            file.write(', ')
+                            file.write(',')
                             
                         comma = True
                         
@@ -232,7 +234,7 @@ class TwitterCollector():
                 
             if self.CONFIG['show_tweet_quantity']:
                 print('Tweets recopilados en esta ronda: {}'.format(row_tweet_quantity))
-                print('Tweets recopilados en total: {}'.format(tweet_quantity))
+                print('Tweets recopilados en total: {}\n'.format(tweet_quantity))
         
         for user in users:
             with open('{}{}.json'.format(folder_name, user), 'a') as file:
@@ -328,10 +330,17 @@ class TwitterCollector():
             if has_tweets:
                 wb = Workbook()
                 
+                first_sheet = True
                 for user, statuses in users_statuses.items():
                     if len(list(statuses.keys())) > 0:
-
-                        ws = wb.create_sheet(title=user[1:])
+                        
+                        if first_sheet:
+                            ws = wb.active
+                            ws.title = user[1:]
+                            first_sheet = False
+                        else:
+                            ws = wb.create_sheet(title=user[1:])
+                            
                         ws.append(list(statuses[list(statuses.keys())[0]].keys()))
                         
                         for status in statuses.values():
