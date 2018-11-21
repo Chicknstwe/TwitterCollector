@@ -2,14 +2,11 @@
 
 def filterStatuses(raw_statuses):
     """
-    Filtra los estados de tweets en función de los campos "fields", que represe
-    ntan los campos de interés.
+    Filtra los estados de tweets en función de los campos "fields", que representan los campos de interés.
     
-    raw_statuses: list, lista que contiene cada estado de tweets en forma de di
-    ccionario.
+    raw_statuses: list, lista que contiene cada estado de tweets en forma de diccionario.
     
-    output: diccionario x : y donde x es la id (str) de cad tweet e y es un dic
-    cionario con los campos de interés.
+    output: diccionario x : y donde x es la id (str) de cad tweet e y es un diccionario con los campos de interés.
     """
     
     from datetime import datetime as t
@@ -27,13 +24,28 @@ def filterStatuses(raw_statuses):
     return statuses
 
 def getFilesInFolder(folder):
+    """
+    Proporciona una lista de archivos en el directorio folder, siendo folder la ruta especificada.
     
+    Ejemplo de ruta folder: './database/'
+    
+    input: string folder representada por una ruta
+    output: list que contiene variables string con nombres de archivos en el directorio folder
+    """
     from os import listdir
     from os.path import isfile, join
     
     return [f for f in listdir(folder) if isfile(join(folder, f))]
 
 def getFoldersInFolder(folder=None):
+    """
+    Proporciona una lista de directorios en el directorio folder, siendo folder el nombre del directorio. La función busca el directorio indicado a partir del directorio raiz ('./').
+    
+    Ejemplo de directorio folder: 'database' o 'database/user'
+    
+    input: string folder representada por una ruta o None
+    output: list que contiene variables string con nombres de archivos en el directorio folder o en el directorio base si folder es None
+    """
     
     from os import listdir
     from os.path import isfile, join
@@ -47,7 +59,7 @@ def getFoldersInFolder(folder=None):
 
 def connected(reference = 'http://www.google.es'):
     """
-    Determina si hay conexión a internet o no.
+    Determina si hay conexión a internet o no intentando conectar a http://www.google.es.
     
     Devuelve True si la hay y False en caso contrario.
     """
@@ -61,11 +73,14 @@ def connected(reference = 'http://www.google.es'):
 
 def createFolder(directory):
     """
+    Crea un directorio con el nombre directory en la ruta designada.
+    
+    input: string directory
     """
     import os
     
     try:
         if not os.path.exists(directory):
             os.makedirs(directory)
-    except OSError:
-        print ('Error: Creating directory. ' + directory)
+    except Exception as exc:
+        print ('Error {} creando el directorio {}.'.format(exc, directory))
