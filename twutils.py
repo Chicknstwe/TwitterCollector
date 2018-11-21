@@ -14,11 +14,12 @@ def filterStatuses(raw_statuses):
     
     from datetime import datetime as t
     
-    fields = ['created_at', 'favorite_count', 'hashtags', 'id_str', 'retweet_count', 'full_text']
+    fields = ['created_at', 'favorite_count', 'hashtags', 'id_str', 'retweet_count', 'full_text', 'user_mentions']
     statuses = {status['id_str']:{field:status[field] for field in fields if field != 'id_str'} for status in raw_statuses}
     
     for status in statuses:
         statuses[status]['hashtags'] = ', '.join(['#' + hashtag.text for hashtag in statuses[status]['hashtags']])
+        statuses[status]['user_mentions'] = ', '.join(['@' + user_mention.screen_name for user_mention in statuses[status]['user_mentions']])
     
         # Adds current time as one of the fields
         statuses[status]['collected_at'] = str(t.now())
