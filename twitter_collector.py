@@ -66,7 +66,7 @@ class TwitterCollector():
             
             
     def getUsers(self):
-        
+
         mode = self.CONFIG['get_users_mode']
         
         if mode == 'file':
@@ -95,6 +95,9 @@ class TwitterCollector():
     
     
     def getConfigInfo(self):
+        """
+        Muestra información sobre los distintos estados posibles para cada campo de la configuración de la clase.
+        """
         
         descriptions = {
                 'use_last_ids': 'Con valor True, se recolectarán tweets a partir del último registrado por el programa.',
@@ -112,6 +115,9 @@ class TwitterCollector():
             
             
     def getConfig(self):
+        """
+        Muestra una tabla con la configuración actual para cda campo disponible.
+        """
         
         print('{: <25}{: <15}'.format('Campo', 'Valor actual'))
         for field, value in self.CONFIG.items():
@@ -119,6 +125,22 @@ class TwitterCollector():
             
             
     def setConfig(self, *args):
+        """
+        Cambia el valor de cada campo, expresado en forma de string, contenido en args. Todos los argumentos deben ser variables string que esten contemplados en la configuración de la clase. Estos son:
+        
+        user_last_ids
+        show_sleep
+        show_info
+        show_tweet_quantity
+        show_rate_limit
+        get_users_mode
+        auto_export
+        export_mode
+        
+        Ejemplo de uso: obj.setConfig('user_last_ids', 'show_rate_limit')
+        
+        input: list args, que contiene nombres de campos de configuración disponibles
+        """
         
         for field in args:
             if field in self.CONFIG.keys():
@@ -143,7 +165,13 @@ class TwitterCollector():
     
     
     def executeQueries(self):
+        """
+        Inicia el proceso de recolección de tweets usando la REST API de twitter para cada cuenta proporcionada por el usuario.
         
+        Se detiene cuando un archivo con nombre "stop" (sin extensión de archivo) es ubicado en el directorio raiz.
+        
+        Si el proceso se ejecuta exitosamente, los tweets son codificados y guardados en archivos JSON en el directorio database
+        """
         import twutils
         import json
         import time
@@ -275,6 +303,11 @@ class TwitterCollector():
 
 
     def exportToExcel(self, folder_name):
+        """
+        Exporta a excel los archivos json del directorio folder_name usando el modo disponible en self.CONFIG['export_mode'].
+        
+        input: string folder_name
+        """
         
         from openpyxl import Workbook
         from twutils import getFilesInFolder
@@ -354,7 +387,9 @@ class TwitterCollector():
             print('El modo seleccionado para este método es incorrecto. Se ha seleccionado automáticamente el modo "split". Pruebe a ejecutarlo de nuevo.')
             
     def exportAllToExcel(self):
-        
+        """
+        Ejecuta self.exportToExcel(folder_name) en todos los directorios existentes en el directorio './database/'.
+        """
         import twutils
         
         sessions = twutils.getFoldersInFolder('database')
@@ -366,7 +401,9 @@ class TwitterCollector():
                 self.exportToExcel('./database/{}/'.format(session))
             
     def exportThisToExcel(self):
-        
+        """
+        Ejecuta self.exportToExcel(folder_name) con una sesión, representada como un directorio contenido en './database/'. Despliega una interfaz para que el usuario seleccione la sesión a exportar con un número.
+        """
         from twutils import getFoldersInFolder
         
         sessions = getFoldersInFolder('database')
